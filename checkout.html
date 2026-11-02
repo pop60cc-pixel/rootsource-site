@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Place an order | Root Source</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Choose your Root Source products, see your total including delivery, and send your order on WhatsApp.">
+<link rel="canonical" href="https://rootsource.one/checkout.html">
+<style>
+:root{--bg:#080604;--card:#120d09;--line:#3a2a1c;--text:#e9e0d4;--muted:#a99a89;--copper:#d79a6a;--hi:#ecbd8e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,serif;line-height:1.55;font-size:1.05rem}
+main{max-width:760px;margin:0 auto;padding:32px 20px 80px}
+a{color:var(--hi)}
+.back{display:inline-block;margin-bottom:24px;text-decoration:none;font-family:Cinzel,Georgia,serif;letter-spacing:.08em}
+h1,h2{font-family:Cinzel,Georgia,serif;font-weight:500;letter-spacing:.05em;color:var(--hi)}
+h1{font-size:clamp(2rem,7vw,3rem);margin:0 0 8px}
+h2{font-size:1.2rem;margin:30px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+.note{color:var(--muted);font-size:.95rem}
+.row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}
+.row b{font-family:Cinzel,Georgia,serif;color:var(--hi)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.sz{flex:1 1 230px}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.step button{width:40px;height:40px;background:transparent;border:0;color:var(--hi);font-size:1.3rem;cursor:pointer}
+.step output{min-width:34px;text-align:center}
+.lt{min-width:70px;text-align:right;font-family:Cinzel,Georgia,serif;color:var(--hi)}
+table{width:100%;border-collapse:collapse}
+td{padding:8px 0;border-bottom:1px solid var(--line)}
+td:last-child{text-align:right}
+tr.tot td{font-family:Cinzel,Georgia,serif;color:var(--hi);font-size:1.2rem;border-bottom:0}
+label{display:block;margin:12px 0 4px}
+input,textarea{background:#0d0a07;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;max-width:100%}
+input[type=text],input[type=tel],input[type=email],textarea{width:100%}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-top:16px}
+.chk input{margin-top:5px}
+.btn{display:inline-block;margin-top:18px;padding:14px 28px;border-radius:999px;border:0;background:#25d366;color:#04170a;font-weight:600;font-family:Cinzel,Georgia,serif;font-size:1rem;cursor:pointer}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="/">&larr; Back to Root Source</a>
+<h1>Your order</h1>
+<p>Choose your products, sizes and quantities, see your total, and send your order on WhatsApp. You can order more than one size of the same product. We confirm availability and send our EFT details before anything is paid.</p>
+
+<h2>1. Products</h2>
+<div id="items"></div>
+
+<h2>2. Your total</h2>
+<table>
+<tr><td>Products</td><td id="sub">R0</td></tr>
+<tr><td>Delivery to a PUDO locker (The Courier Guy)</td><td id="del">R0</td></tr>
+<tr class="tot"><td>Total</td><td id="tot">R0</td></tr>
+</table>
+<p class="note">Prices are in South African Rand. Delivery is R75 per order.</p>
+
+<h2>3. Delivery details</h2>
+<p class="note">We deliver through The Courier Guy to a PUDO locker of your choice.</p>
+<label for="nm">Full name</label>
+<input type="text" id="nm" autocomplete="name">
+<label for="ph">Mobile number (for the courier)</label>
+<input type="tel" id="ph" autocomplete="tel">
+<label for="em">Email (the courier needs it to send your parcel updates)</label>
+<input type="email" id="em" autocomplete="email">
+<label for="lk">PUDO locker (name and town)</label>
+<input type="text" id="lk">
+<label for="nt">Notes (optional)</label>
+<textarea id="nt" rows="3"></textarea>
+<div class="chk"><input type="checkbox" id="tc"><label for="tc" style="margin:0">I have read the <a href="terms.html" target="_blank" rel="noopener">Terms and Contact</a> page.</label></div>
+
+<button type="button" class="btn" id="send" disabled>Send order on WhatsApp</button>
+<p class="note" id="hint">Choose at least one product and fill in your name, mobile number, email and PUDO locker to continue.</p>
+<p class="note">Payment is by EFT. We confirm your order and send our banking details on WhatsApp, and your order is prepared once payment is received. The details you enter here are only used to write your WhatsApp message, and nothing is stored on this website.</p>
+</main>
+<script>
+var DELIVERY = 75;
+var WHATSAPP = "27687344919";
+var P = [
+  {id:"tongkat", name:"Tongkat Ali (Pasak Bumi)", sizes:[{l:"50ml jar, 40 capsules", p:349},{l:"100ml jar, 80 capsules", p:649}]},
+  {id:"purwoceng", name:"Purwoceng", sizes:[{l:"50ml jar, 40 capsules", p:399},{l:"100ml jar, 80 capsules", p:729}]},
+  {id:"sambiloto", name:"Sambiloto", sizes:[{l:"50ml jar, 40 capsules", p:249},{l:"100ml jar, 80 capsules", p:449}]},
+  {id:"menthol", name:"Menthol Crystals", sizes:[{l:"50g", p:129},{l:"100g", p:229}]}
+];
+var st = {};
+P.forEach(function(p){ st[p.id] = p.sizes.map(function(){ return 0; }); });
+
+function R(n){ return "R" + n; }
+function val(id){ return document.getElementById(id).value.replace(/^\s+|\s+$/g, ""); }
+
+function subtotal(){
+  var sub = 0;
+  P.forEach(function(p){ p.sizes.forEach(function(s, i){ sub += st[p.id][i] * s.p; }); });
+  return sub;
+}
+
+function totals(){
+  var sub = subtotal();
+  var del = sub > 0 ? DELIVERY : 0;
+  document.getElementById("sub").textContent = R(sub);
+  document.getElementById("del").textContent = R(del);
+  document.getElementById("tot").textContent = R(sub + del);
+  return sub;
+}
+
+function check(){
+  var sub = totals();
+  var ok = sub > 0 && val("nm") && val("ph") && val("lk") && /^\S+@\S+\.\S+$/.test(val("em")) && document.getElementById("tc").checked;
+  document.getElementById("send").disabled = !ok;
+  document.getElementById("hint").style.display = ok ? "none" : "block";
+}
+
+function render(){
+  var h = "";
+  P.forEach(function(p){
+    h += '<div class="row"><b>' + p.name + '</b>';
+    p.sizes.forEach(function(s, i){
+      var q = st[p.id][i];
+      h += '<div class="ctl"><span class="sz">' + s.l + ' - R' + s.p + '</span>';
+      h += '<div class="step"><button type="button" data-id="' + p.id + '" data-i="' + i + '" data-k="dec" aria-label="Fewer">&minus;</button><output>' + q + '</output><button type="button" data-id="' + p.id + '" data-i="' + i + '" data-k="inc" aria-label="More">+</button></div>';
+      h += '<span class="lt">' + (q ? R(q * s.p) : '') + '</span></div>';
+    });
+    h += '</div>';
+  });
+  document.getElementById("items").innerHTML = h;
+  check();
+}
+
+document.getElementById("items").addEventListener("click", function(e){
+  var b = e.target.closest("button");
+  if (!b) return;
+  var id = b.getAttribute("data-id");
+  var i = parseInt(b.getAttribute("data-i"), 10);
+  if (b.getAttribute("data-k") === "inc" && st[id][i] < 20) st[id][i]++;
+  if (b.getAttribute("data-k") === "dec" && st[id][i] > 0) st[id][i]--;
+  render();
+});
+["nm", "ph", "em", "lk", "nt", "tc"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", check);
+  document.getElementById(id).addEventListener("change", check);
+});
+
+document.getElementById("send").addEventListener("click", function(){
+  var sub = 0, lines = [];
+  P.forEach(function(p){
+    p.sizes.forEach(function(s, i){
+      var q = st[p.id][i];
+      if (q > 0) { sub += q * s.p; lines.push("- " + q + " x " + p.name + " (" + s.l + ") = " + R(q * s.p)); }
+    });
+  });
+  if (sub === 0) return;
+  var msg = "Hi Root Source, I'd like to place an order:\n\n" + lines.join("\n") +
+    "\n\nProducts: " + R(sub) + "\nDelivery to a PUDO locker (The Courier Guy): " + R(DELIVERY) + "\nTotal: " + R(sub + DELIVERY) +
+    "\n\nName: " + val("nm") + "\nMobile: " + val("ph") + "\nEmail: " + val("em") +
+    "\nPUDO locker: " + val("lk") + (val("nt") ? "\nNotes: " + val("nt") : "") +
+    "\n\nI will pay by EFT once you confirm availability and send your banking details.";
+  window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg), "_blank");
+});
+
+render();
+</script>
+</body>
+</html>

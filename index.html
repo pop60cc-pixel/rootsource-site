@@ -239,7 +239,7 @@ var CAPS = [
 ];
 var PRODUCTS = [
   {
-    id:"pasak-bumi", name:"Tongkat Ali", alt:"Pasak Bumi", latin:"Eurycoma longifolia Jack.",
+    id:"pasak-bumi", sheet:"tongkat-ali.html", name:"Tongkat Ali", alt:"Pasak Bumi", latin:"Eurycoma longifolia Jack.",
     spec:"500mg 3:1 standardized extract capsules", jar:"Tongkat Ali 500mg 3:1", sizes:CAPS,
     origin:[
       "Eurycoma longifolia Jack. is a slender, slow-growing tree of Southeast Asian rainforests.",
@@ -253,7 +253,7 @@ var PRODUCTS = [
       "500mg per capsule."
     ],
     directions:[
-      "Take 1 capsule about 1 hour before breakfast and before lunch.",
+      "Take 1 capsule 1 to 2 hours before breakfast and before lunch, on an empty stomach, Monday to Friday. Saturday and Sunday are rest days.",
       "Do not exceed 2 capsules in 24 hours.",
       "Drink plenty of water through the day."
     ],
@@ -278,7 +278,7 @@ var PRODUCTS = [
       "500mg per capsule."
     ],
     directions:[
-      "Take 1 capsule about 1 hour before breakfast and before lunch.",
+      "Take 1 capsule 1 to 2 hours before breakfast and before lunch, on an empty stomach, Monday to Friday. Saturday and Sunday are rest days.",
       "Do not exceed 2 capsules in 24 hours.",
       "Drink plenty of water through the day."
     ],
@@ -380,7 +380,7 @@ function card(p){
     '<p class="spec">' + p.spec + '</p>' +
     '<p class="price" data-price="' + p.id + '"></p><p class="sizeinfo" data-sizeinfo="' + p.id + '"></p>' +
     controls(p) +
-    '<button type="button" class="btn" data-act="open" data-pid="' + p.id + '" style="margin-bottom:10px">View details</button>' +
+    '<button type="button" class="btn" data-act="open" data-pid="' + p.id + '" style="margin-bottom:10px">View details</button>' + (p.sheet ? '<a class="btn" href="' + p.sheet + '" style="margin-bottom:10px">Read the fact sheet</a>' : '') +
     orderBtns(p) + '</article>';
 }
 function dialogHTML(p){

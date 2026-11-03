@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Place an order | Root Source</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Choose your Root Source products, see your total including delivery, and send your order on WhatsApp.">
+<meta name="description" content="Choose your Root Source products, see your total including delivery, and send your order.">
 <link rel="canonical" href="https://rootsource.one/checkout.html">
 <style>
 :root{--bg:#080604;--card:#120d09;--line:#3a2a1c;--text:#e9e0d4;--muted:#a99a89;--copper:#d79a6a;--hi:#ecbd8e}
@@ -35,15 +35,17 @@ input,textarea{background:#0d0a07;color:var(--text);border:1px solid var(--line)
 input[type=text],input[type=tel],input[type=email],textarea{width:100%}
 .chk{display:flex;gap:10px;align-items:flex-start;margin-top:16px}
 .chk input{margin-top:5px}
-.btn{display:inline-block;margin-top:18px;padding:14px 28px;border-radius:999px;border:0;background:#25d366;color:#04170a;font-weight:600;font-family:Cinzel,Georgia,serif;font-size:1rem;cursor:pointer}
+.btn{display:inline-block;margin-top:18px;padding:14px 28px;border-radius:999px;border:0;background:#25d366;color:#04170a;font-weight:600;font-family:Cinzel,Georgia,serif;font-size:1rem;cursor:pointer;text-decoration:none}
 .btn[disabled]{opacity:.4;cursor:not-allowed}
+.hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+#done{display:none;border-color:var(--copper)}
 </style>
 </head>
 <body>
 <main>
 <a class="back" href="/">&larr; Back to Root Source</a>
 <h1>Your order</h1>
-<p>Choose your products, sizes and quantities, see your total, and send your order on WhatsApp. You can order more than one size of the same product. We confirm availability and send our EFT details before anything is paid.</p>
+<p>Choose your products, sizes and quantities, see your total, and send your order. You can order more than one size of the same product. We confirm availability and send our payment details before anything is paid.</p>
 
 <h2>1. Products</h2>
 <div id="items"></div>
@@ -68,13 +70,30 @@ input[type=text],input[type=tel],input[type=email],textarea{width:100%}
 <input type="text" id="lk">
 <label for="nt">Notes (optional)</label>
 <textarea id="nt" rows="3"></textarea>
-<div class="chk"><input type="checkbox" id="tc"><label for="tc" style="margin:0">I have read the <a href="terms.html" target="_blank" rel="noopener">Terms and Contact</a> page.</label></div>
+<div class="hp" aria-hidden="true"><label for="hp">Leave this empty</label><input type="text" id="hp" tabindex="-1" autocomplete="off"></div>
 
-<button type="button" class="btn" id="send" disabled>Send order on WhatsApp</button>
+<h2>4. Payment</h2>
+<div id="payopt"></div>
+<div class="chk"><input type="checkbox" id="tc"><label for="tc" style="margin:0">I have read the <a href="terms.html" target="_blank" rel="noopener">Terms and Contact</a> page.</label></div>
+<div class="chk"><input type="checkbox" id="mk"><label for="mk" style="margin:0">Optional: yes, please add me to Root Source's contact list for updates and offers by WhatsApp and email. I can opt out at any time by messaging admin@rootsource.one or Root Source on WhatsApp.</label></div>
+
+<div class="chk"><input type="checkbox" id="rm"><label for="rm" style="margin:0">Optional: please email me a reminder when my supply of Tongkat Ali or Purwoceng is likely to be running low. I can stop these reminders at any time by messaging Root Source.</label></div>
+
+<button type="button" class="btn" id="send" disabled>Place my order</button>
 <p class="note" id="hint">Choose at least one product and fill in your name, mobile number, email and PUDO locker to continue.</p>
-<p class="note">Payment is by EFT. We confirm your order and send our banking details on WhatsApp, and your order is prepared once payment is received. The details you enter here are only used to write your WhatsApp message, and nothing is stored on this website.</p>
+<p class="note">The details you enter here are saved in our private order records so we can process and track your order. They are not shown publicly.</p>
+
+<div class="row" id="done">
+<b id="dt"></b>
+<p id="dp"></p>
+<a class="btn" id="wa" target="_blank" rel="noopener">Open WhatsApp and send your order</a>
+<p class="note" id="dn"></p>
+<p class="note"><a href="#" id="savecard">Save Root Source to your contacts</a> so our replies and updates reach you on WhatsApp.</p>
+</div>
 </main>
 <script>
+var ORDER_URL = "https://script.google.com/macros/s/AKfycbzqDvYb1aQErl4dzL_AihQr3plLnCRzkJFErzjnndON1HhMEcq2R0URDkkKC3d1ORuZTQ/exec";
+var CARD_ENABLED = false;
 var DELIVERY = 75;
 var WHATSAPP = "27687344919";
 var P = [
@@ -87,14 +106,18 @@ var st = {};
 P.forEach(function(p){ st[p.id] = p.sizes.map(function(){ return 0; }); });
 
 function R(n){ return "R" + n; }
+function z(n){ return (n < 10 ? "0" : "") + n; }
 function val(id){ return document.getElementById(id).value.replace(/^\s+|\s+$/g, ""); }
+function initials(name){
+  var w = name.split(/\s+/).filter(function(x){ return x; });
+  return w.length ? (w[0].charAt(0) + (w.length > 1 ? w[w.length - 1].charAt(0) : "")).toUpperCase() : "";
+}
 
 function subtotal(){
   var sub = 0;
   P.forEach(function(p){ p.sizes.forEach(function(s, i){ sub += st[p.id][i] * s.p; }); });
   return sub;
 }
-
 function totals(){
   var sub = subtotal();
   var del = sub > 0 ? DELIVERY : 0;
@@ -103,14 +126,12 @@ function totals(){
   document.getElementById("tot").textContent = R(sub + del);
   return sub;
 }
-
 function check(){
   var sub = totals();
   var ok = sub > 0 && val("nm") && val("ph") && val("lk") && /^\S+@\S+\.\S+$/.test(val("em")) && document.getElementById("tc").checked;
   document.getElementById("send").disabled = !ok;
   document.getElementById("hint").style.display = ok ? "none" : "block";
 }
-
 function render(){
   var h = "";
   P.forEach(function(p){
@@ -127,6 +148,14 @@ function render(){
   check();
 }
 
+(function(){
+  var h = '<p class="note">Payment is by EFT. We confirm your order and send our banking details on WhatsApp, and your order is prepared once payment is received.</p>';
+  if (CARD_ENABLED) {
+    h = '<div class="chk" style="margin-top:0"><input type="radio" name="pay" id="pe" checked><label for="pe" style="margin:0">EFT (we send you our banking details)</label></div><div class="chk"><input type="radio" name="pay" id="pc"><label for="pc" style="margin:0">Card (we send you a secure payment link)</label></div>';
+  }
+  document.getElementById("payopt").innerHTML = h;
+})();
+
 document.getElementById("items").addEventListener("click", function(e){
   var b = e.target.closest("button");
   if (!b) return;
@@ -141,23 +170,71 @@ document.getElementById("items").addEventListener("click", function(e){
   document.getElementById(id).addEventListener("change", check);
 });
 
-document.getElementById("send").addEventListener("click", function(){
-  var sub = 0, lines = [];
+function lineList(){
+  var lines = [], sub = 0, items = [];
   P.forEach(function(p){
     p.sizes.forEach(function(s, i){
       var q = st[p.id][i];
-      if (q > 0) { sub += q * s.p; lines.push("- " + q + " x " + p.name + " (" + s.l + ") = " + R(q * s.p)); }
+      if (q > 0) { sub += q * s.p; lines.push("- " + q + " x " + p.name + " (" + s.l + ") = " + R(q * s.p)); items.push({id:p.id, size:i, qty:q}); }
     });
   });
-  if (sub === 0) return;
-  var msg = "Hi Root Source, I'd like to place an order:\n\n" + lines.join("\n") +
-    "\n\nProducts: " + R(sub) + "\nDelivery to a PUDO locker (The Courier Guy): " + R(DELIVERY) + "\nTotal: " + R(sub + DELIVERY) +
+  return {lines:lines, sub:sub, items:items};
+}
+
+function showDone(orderNo, ref, L, pay, mk){
+  var d = new Date();
+  var today = z(d.getDate()) + "/" + z(d.getMonth() + 1) + "/" + d.getFullYear();
+  var msg = "Hi Root Source, I'd like to confirm my order" + (orderNo ? " " + orderNo : "") + " (reference " + ref + "):\n\n" + L.lines.join("\n") +
+    "\n\nProducts: " + R(L.sub) + "\nDelivery to a PUDO locker (The Courier Guy): " + R(DELIVERY) + "\nTotal: " + R(L.sub + DELIVERY) +
     "\n\nName: " + val("nm") + "\nMobile: " + val("ph") + "\nEmail: " + val("em") +
     "\nPUDO locker: " + val("lk") + (val("nt") ? "\nNotes: " + val("nt") : "") +
-    "\n\nI will pay by EFT once you confirm availability and send your banking details.";
-  window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg), "_blank");
+    "\nPayment: " + (pay === "Card" ? "Card (please send me a secure payment link)" : "EFT") +
+    "\nUpdates and offers: " + (mk ? "YES, please add me to your contact list for updates and offers (agreed on " + today + ")" : "No") +
+    "\n\nI will quote reference " + ref + " with my payment.";
+  document.getElementById("wa").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg);
+  document.getElementById("dt").textContent = orderNo ? "Order " + orderNo + " received" : "Your order is ready to send";
+  document.getElementById("dp").textContent = pay === "Card" ? "Your order reference: " + ref + ". We will send you a secure payment link." : "Your reference for payment: " + ref + ". Please quote it with your EFT payment.";
+  document.getElementById("dn").textContent = "Press the green button to send your order to us on WhatsApp. We confirm availability and send our payment details there.";
+  document.getElementById("done").style.display = "block";
+  document.getElementById("done").scrollIntoView({behavior:"smooth"});
+}
+
+document.getElementById("send").addEventListener("click", function(){
+  var L = lineList();
+  if (!L.sub) return;
+  var btn = this;
+  btn.disabled = true;
+  btn.textContent = "Sending your order...";
+  var mk = document.getElementById("mk").checked;
+  var pay = (CARD_ENABLED && document.getElementById("pc") && document.getElementById("pc").checked) ? "Card" : "EFT";
+  function local(){
+    var d = new Date();
+    var ref = "RS-" + initials(val("nm")) + "-" + z(d.getDate()) + z(d.getMonth() + 1) + "-" + z(d.getHours()) + z(d.getMinutes());
+    showDone("", ref, L, pay, mk);
+    btn.textContent = "Order ready to send";
+  }
+  if (!ORDER_URL) { local(); return; }
+  var payload = {name:val("nm"), mobile:val("ph"), email:val("em"), locker:val("lk"), notes:val("nt"), marketing:mk, reminders:document.getElementById("rm").checked, payment:pay, items:L.items, website:val("hp")};
+  fetch(ORDER_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)})
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if (res && res.ok) { showDone(res.orderNo, res.ref, L, pay, mk); btn.textContent = "Order placed"; }
+      else { local(); }
+    })
+    .catch(local);
 });
 
+document.getElementById("savecard").addEventListener("click", function(e){
+  e.preventDefault();
+  var v = "BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Root Source\r\nORG:Root Source (Pty) Ltd\r\nTEL;TYPE=CELL:+27687344919\r\nEMAIL:admin@rootsource.one\r\nURL:https://rootsource.one\r\nEND:VCARD\r\n";
+  var b = new Blob([v], {type:"text/vcard"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(b);
+  a.download = "Root-Source.vcf";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+});
+
+(function(){ var m = location.search.match(/[?&]add=([a-z]+)&size=(\d+)&qty=(\d+)/); if (m && st[m[1]] && st[m[1]][+m[2]] !== undefined) { st[m[1]][+m[2]] = Math.min(+m[3], 20); } })();
 render();
 </script>
 </body>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order contact card | Root Source</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{--bg:#080604;--card:#120d09;--line:#3a2a1c;--text:#e9e0d4;--muted:#a99a89;--hi:#ecbd8e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,serif;line-height:1.55;font-size:1.05rem}
+main{max-width:720px;margin:0 auto;padding:28px 20px 80px}
+h1{font-family:Cinzel,Georgia,serif;font-weight:500;color:var(--hi);font-size:clamp(1.8rem,6vw,2.4rem);margin:0 0 8px}
+.note{color:var(--muted);font-size:.95rem}
+label{display:block;margin:14px 0 4px}
+textarea,input{width:100%;background:#0d0a07;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
+.btn{display:inline-block;margin:14px 10px 0 0;padding:12px 24px;border-radius:999px;border:0;background:#25d366;color:#04170a;font-weight:600;font-family:Cinzel,Georgia,serif;font-size:1rem;cursor:pointer}
+.btn.alt{background:transparent;border:1px solid var(--hi);color:var(--hi)}
+#out{display:none;margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 16px 18px}
+</style>
+</head>
+<body>
+<main>
+<h1>Order contact card</h1>
+<p class="note">Paste an order message from WhatsApp, press Read order, check the details, then add the customer to your contacts. Everything happens in this browser. Nothing is sent or stored.</p>
+<label for="src">Order message from WhatsApp</label>
+<textarea id="src" rows="9"></textarea>
+<button type="button" class="btn" id="read">Read order</button>
+
+<div id="out">
+<label for="fn">Contact name (shown in your contacts and WhatsApp)</label>
+<input type="text" id="fn">
+<label for="tel">Mobile number</label>
+<input type="text" id="tel">
+<label for="eml">Email</label>
+<input type="text" id="eml">
+<label for="nte">Contact note</label>
+<textarea id="nte" rows="4"></textarea>
+<button type="button" class="btn" id="save">Add contact (download card)</button>
+<button type="button" class="btn alt" id="copy">Copy contact name</button>
+<p class="note" id="msg"></p>
+<p class="note">Open the downloaded card on your phone and choose Save or Add to contacts. On a computer, double-click it to open it in your contacts program.</p>
+</div>
+</main>
+<script>
+function g(t, re){ var m = t.match(re); return m ? m[1].replace(/^\s+|\s+$/g, "") : ""; }
+function intl(n){
+  var d = n.replace(/[^0-9+]/g, "");
+  if (d.charAt(0) === "+") return d;
+  if (d.indexOf("27") === 0) return "+" + d;
+  if (d.charAt(0) === "0") return "+27" + d.slice(1);
+  return d;
+}
+function esc(s){ return s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n"); }
+
+document.getElementById("read").addEventListener("click", function(){
+  var t = document.getElementById("src").value;
+  var name = g(t, /^Name:\s*(.+)$/mi);
+  var ref = g(t, /reference\s+(RS-[A-Z0-9\-]+)/i);
+  var locker = g(t, /^PUDO locker:\s*(.+)$/mi);
+  var agreed = g(t, /agreed on\s+([0-9\/]+)/i);
+  var mk = /Updates and offers:\s*YES/i.test(t);
+  document.getElementById("fn").value = name ? (name + (ref ? " - " + ref : "")) : "";
+  document.getElementById("tel").value = intl(g(t, /^Mobile:\s*(.+)$/mi));
+  document.getElementById("eml").value = g(t, /^Email:\s*(.+)$/mi);
+  document.getElementById("nte").value = "Root Source order " + (ref || "") + (locker ? ". PUDO locker: " + locker : "") + ". Marketing messages: " + (mk ? "YES (agreed " + (agreed || "date not shown") + ")" : "No");
+  document.getElementById("out").style.display = "block";
+  document.getElementById("msg").textContent = name ? "" : "I could not find a name in that message. Please check it was pasted in full.";
+});
+
+document.getElementById("save").addEventListener("click", function(){
+  var fn = document.getElementById("fn").value.replace(/^\s+|\s+$/g, "");
+  if (!fn) { document.getElementById("msg").textContent = "Please enter a contact name first."; return; }
+  var tel = document.getElementById("tel").value.replace(/^\s+|\s+$/g, "");
+  var eml = document.getElementById("eml").value.replace(/^\s+|\s+$/g, "");
+  var nte = document.getElementById("nte").value;
+  var v = "BEGIN:VCARD\r\nVERSION:3.0\r\nFN:" + esc(fn) + "\r\nN:;" + esc(fn) + ";;;\r\nORG:Root Source customer\r\n" +
+    (tel ? "TEL;TYPE=CELL:" + tel + "\r\n" : "") + (eml ? "EMAIL:" + esc(eml) + "\r\n" : "") +
+    "NOTE:" + esc(nte) + "\r\nEND:VCARD\r\n";
+  var b = new Blob([v], {type: "text/vcard"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(b);
+  a.download = fn.replace(/[^A-Za-z0-9 _\-]/g, "").replace(/\s+/g, "-") + ".vcf";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  document.getElementById("msg").textContent = "Card downloaded. Open it to save the contact.";
+});
+
+document.getElementById("copy").addEventListener("click", function(){
+  var fn = document.getElementById("fn").value;
+  if (navigator.clipboard) { navigator.clipboard.writeText(fn); document.getElementById("msg").textContent = "Name copied."; }
+});
+</script>
+</body>
+</html>

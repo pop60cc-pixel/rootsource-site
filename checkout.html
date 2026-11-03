@@ -42,10 +42,20 @@ input[type=text],input[type=tel],input[type=email],textarea{width:100%}
 .btn[disabled]{opacity:.4;cursor:not-allowed}
 .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
 #done{display:none;border-color:var(--copper)}
+
+/* design: rock backdrop, glow, readability */
+:root{--text:#f6e6d0;--muted:#d6bea0}
+body{background:#080604!important;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(rgba(5,4,3,.18),rgba(5,4,3,.42)),url(/bg-rock.jpg) center/cover no-repeat}
+main{background:rgba(8,6,4,.86);border:1px solid rgba(215,154,106,.28);border-radius:22px;margin:24px auto 40px;box-shadow:0 0 48px rgba(215,154,106,.16);padding:30px 26px 70px!important}
+@media(max-width:600px){main{margin:12px 10px 30px;padding:24px 16px 56px!important;border-radius:16px}}
+.pglogo{display:block;width:62px;height:62px;margin:0 0 10px;border-radius:50%;filter:drop-shadow(0 0 8px rgba(236,189,142,.8)) drop-shadow(0 0 20px rgba(215,154,106,.5))}
+details,.glance div,.row,.contact div{background:rgba(18,13,9,.9)}
 </style>
 </head>
 <body>
 <main>
+<img class="pglogo" src="/logo-mark.png" width="62" height="62" alt="Root Source logo">
 <a class="back" href="/">&larr; Back to Root Source</a>
 <h1>Your order</h1>
 <p>Choose your products, sizes and quantities, see your total, and send your order. You can order more than one size of the same product. We confirm availability and send our payment details before anything is paid.</p>

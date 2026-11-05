@@ -125,3 +125,6 @@ backdrop-filter:blur(1.5px)}
 
 /* v8: transparent capsule PNG carries its own soft glow */
 .himg{max-width:720px!important;padding:0 8px}.himg img{filter:none!important}
+
+/* v9: natural-proportion glass capsule hero */
+.himg{max-width:760px!important}

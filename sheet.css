@@ -10,10 +10,10 @@ a{color:var(--cop)}img{max-width:100%;height:auto;display:block}
 .tb-back{font-family:var(--disp);font-size:12px;letter-spacing:.12em;text-decoration:none;text-transform:uppercase}
 main{max-width:1060px;margin:0 auto;padding:0 18px 90px}
 .hero2{position:relative;padding-top:26px}
-.himg{margin:0;width:100%;padding:10px 0 0}
-.himg img{width:100%;height:auto;filter:drop-shadow(0 0 18px rgba(236,189,142,.75)) drop-shadow(0 0 55px rgba(236,189,142,.45)) drop-shadow(0 22px 30px rgba(0,0,0,.7));animation:flt 7s ease-in-out infinite}
+.himg{margin:0 auto;width:100%;max-width:640px;padding:18px 18px 0}
+.himg img{width:100%;height:auto;filter:drop-shadow(0 0 10px rgba(236,189,142,.65)) drop-shadow(0 0 34px rgba(236,189,142,.35));animation:flt 7s ease-in-out infinite}
 @keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.tblock{text-align:center;max-width:780px;margin:-10px auto 0;position:relative;padding:34px 26px 10px;border-radius:18px;background:linear-gradient(180deg,rgba(14,10,6,.9),rgba(8,6,4,.94));border:1px solid var(--line);box-shadow:0 14px 50px rgba(0,0,0,.6)}
+.tblock{text-align:center;max-width:780px;margin:4px auto 0;position:relative;padding:34px 26px 10px;border-radius:18px;background:linear-gradient(180deg,rgba(14,10,6,.9),rgba(8,6,4,.94));border:1px solid var(--line);box-shadow:0 14px 50px rgba(0,0,0,.6)}
 .eyebrow{font-family:var(--disp);letter-spacing:.35em;text-transform:uppercase;font-size:12px;color:var(--cop2);margin:0 0 8px}
 h1{font-family:var(--disp);font-weight:500;font-size:clamp(30px,6vw,52px);line-height:1.1;margin:0 0 6px;letter-spacing:.04em;background:linear-gradient(180deg,#fff2dc,#ecbd8e 60%,#c98a4f);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.75))}
 .sub{font-style:italic;color:var(--muted);margin:0 0 14px;font-size:22px}
@@ -84,7 +84,41 @@ h1{font-family:var(--disp);font-weight:500;font-size:clamp(30px,6vw,52px);line-h
 @media(max-width:760px){.tblock{margin-top:0!important}body{font-size:18px}.ch{grid-template-columns:1fr;gap:6px;padding:38px 0}.chead{display:flex;align-items:baseline;gap:14px}.num{font-size:54px}.chead h2{font-size:18px}.orderband{grid-template-columns:1fr}.tblock{margin-top:-40px;padding:26px 16px 6px}.pull{font-size:23px}.faq{columns:1}.chnav{justify-content:flex-start}.obar .op{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.js .rv{opacity:1;transform:none}html{scroll-behavior:auto}}
 .ph{position:relative;display:grid;place-items:center;text-align:center;aspect-ratio:1400/618;border-radius:22px;background:radial-gradient(ellipse at 50% 45%,rgba(236,189,142,.16),rgba(0,0,0,0) 65%)}
-.ph .emb{width:36%;max-width:300px;filter:drop-shadow(0 0 18px rgba(236,189,142,.75)) drop-shadow(0 0 55px rgba(236,189,142,.45));animation:flt 7s ease-in-out infinite}
+.ph .emb{width:36%;max-width:240px;filter:drop-shadow(0 0 18px rgba(236,189,142,.75)) drop-shadow(0 0 55px rgba(236,189,142,.45));animation:flt 7s ease-in-out infinite}
 .ph .phn{position:absolute;bottom:8%;left:0;right:0;font-family:var(--disp);letter-spacing:.2em;text-transform:uppercase;font-size:clamp(18px,4vw,40px);background:linear-gradient(180deg,#fff2dc,#ecbd8e 60%,#c98a4f);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
 .ph.sm{aspect-ratio:16/9}.ph.sm .emb{width:34%}.ph.sm .phn{font-size:18px;bottom:6%}.ph.mid .emb{width:44%}
 .rcard .ph{border-radius:0}.orderband .ph{aspect-ratio:16/9}
+
+/* 3D glass capsule shell housing the hero */
+.shell{position:relative;margin:26px auto 0;max-width:900px;padding:34px 46px 30px;border-radius:150px;text-align:center;
+background:linear-gradient(165deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 28%,rgba(120,150,175,.05) 60%,rgba(0,0,0,.22) 100%);
+border:1.5px solid rgba(255,255,255,.34);
+box-shadow:inset 0 3px 3px rgba(255,255,255,.55),inset 0 -22px 40px rgba(0,0,0,.5),inset 18px 0 34px rgba(255,255,255,.07),inset -18px 0 34px rgba(0,0,0,.28),0 0 46px rgba(236,189,142,.35),0 34px 50px rgba(0,0,0,.55);
+backdrop-filter:blur(1.5px)}
+.shell::before{content:"";position:absolute;inset:3px;border-radius:inherit;border:1px solid rgba(255,255,255,.14);pointer-events:none}
+.shell .spec{position:absolute;left:9%;right:42%;top:7px;height:20px;border-radius:50%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.8) 35%,rgba(255,255,255,.35) 70%,rgba(255,255,255,0));filter:blur(2px);pointer-events:none}
+.shell .seam{position:absolute;top:14px;bottom:14px;width:2px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.4),rgba(255,255,255,.05));box-shadow:2px 0 6px rgba(0,0,0,.35);pointer-events:none}
+.shell .s1{left:33%}.shell .s2{left:66%}
+.shell .himg{max-width:600px;padding:0;margin:0 auto}
+.shell .himg img{animation:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.55))}
+.shell .tblock{background:none;border:0;box-shadow:none;margin:4px auto 0;padding:6px 0 4px;max-width:640px}
+.shell .ph{aspect-ratio:16/7}
+@media(max-width:760px){.shell{border-radius:70px;padding:30px 20px 24px}.shell .seam{display:none}.shell .spec{left:14%;right:30%}}
+
+/* capsule proportions: art left, text right */
+.shell{max-width:1060px;display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:6px;padding:40px 78px 40px 70px;border-radius:999px;text-align:left}
+.shell .himg{max-width:none;width:100%;margin:0}
+.shell .tblock{text-align:center;max-width:none;padding:0 0 0 18px;margin:0}
+.shell .tblock h1{font-size:clamp(28px,4.2vw,44px)}
+.shell .tblock .lead{font-size:19px;margin-bottom:12px}
+.shell .tblock .sub{font-size:20px;margin-bottom:10px}
+.shell .cta{justify-content:center}
+.shell .cta .btn{padding:11px 20px;font-size:12px}
+.shell .s1{left:50.5%}.shell .s2{display:none}
+.shell .spec{left:12%;right:48%}
+@media(max-width:900px){.shell{grid-template-columns:1fr;padding:34px 22px 28px;border-radius:80px;gap:8px}.shell .tblock{padding:0}.shell .seam{display:none}.shell .spec{left:14%;right:28%}}
+
+@media(min-width:901px){.shell{grid-template-columns:1.3fr 1fr}.shell .s1{left:56.5%}}
+@media(max-width:900px){.shell{grid-template-columns:1fr!important}.shell .himg{max-width:420px;margin:0 auto}}
+
+.himg{max-width:660px!important}.himg img{animation:flt 7s ease-in-out infinite}

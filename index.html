@@ -126,7 +126,7 @@ dialog::backdrop{background:rgba(0,0,0,.8);backdrop-filter:blur(4px)}
   .dhead{grid-template-columns:1fr;text-align:center;justify-items:center}
   .dbody,.dfoot{padding-left:20px;padding-right:20px}
 }
-@media (prefers-reduced-motion:reduce){.hero-logo,.mist{animation:none}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){.hero-logo,.hero-capsule,.mist{animation:none}html{scroll-behavior:auto}}
 .grid .card:first-child{grid-column:1/-1}
 @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:760px){
@@ -172,9 +172,14 @@ h1{text-shadow:none!important;filter:drop-shadow(0 2px 8px rgba(0,0,0,.75))}
 .grid .card:first-child .jar.cap[data-size]{--s:1}
 .stage{align-items:center!important}
 .stage::after{display:none}
+
+/* hero capsule */
+.hero-cap-link{display:block;line-height:0}
+.hero-capsule{width:min(270px,64vw);height:auto;animation:rise 2.2s ease-out both;filter:drop-shadow(0 10px 22px rgba(0,0,0,.6)) drop-shadow(0 0 46px rgba(215,154,106,.30))}
+.hero{padding-top:36px}
 </style>
   <link rel="canonical" href="https://rootsource.one/">
-<link rel="preload" as="image" href="/logo-emblem.webp">
+<link rel="preload" as="image" href="/tongkat-ali-capsule-hero.webp?v=1" type="image/webp">
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#050403">
@@ -211,7 +216,7 @@ h1{text-shadow:none!important;filter:drop-shadow(0 2px 8px rgba(0,0,0,.75))}
 
 <main id="top">
   <div class="hero">
-    <img class="hero-logo" src="/logo-emblem.webp" alt="Root Source logo: a three-leaf sprout with copper roots inside a ring">
+    <a class="hero-cap-link" href="tongkat-ali.html"><img class="hero-capsule" src="/tongkat-ali-capsule-hero.webp?v=1" width="829" height="1624" alt="Tongkat Ali (Pasak Bumi) in a glass capsule with the Root Source logo" fetchpriority="high"></a>
     <h1>Root Source</h1>
     <div class="rule" aria-hidden="true"></div>
     <p class="co">Premium Herbal Company</p>

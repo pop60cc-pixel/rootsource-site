@@ -163,6 +163,15 @@ section.s{position:relative}
 section.s::before{content:"";position:absolute;inset:8px -24px;z-index:-1;border-radius:28px;background:radial-gradient(ellipse at 40% 40%,rgba(5,4,3,.74),rgba(5,4,3,.5) 75%,rgba(5,4,3,.18));pointer-events:none}
 header{background:rgba(5,4,3,.86)!important}
 h1{text-shadow:none!important;filter:drop-shadow(0 2px 8px rgba(0,0,0,.75))}
+
+/* capsule product images */
+.jar.cap{width:116%;max-width:none;margin:0 -8%;filter:none!important;align-self:center}
+.jar.cap img{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.6)) drop-shadow(0 0 18px rgba(236,189,142,.28))}
+.jar.cap[data-size="50ml"],.jar.cap[data-size="50g"]{--s:.92}
+.grid .card:first-child .jar.cap{width:104%;margin:0}
+.grid .card:first-child .jar.cap[data-size]{--s:1}
+.stage{align-items:center!important}
+.stage::after{display:none}
 </style>
   <link rel="canonical" href="https://rootsource.one/">
 <link rel="preload" as="image" href="/logo-emblem.webp">
@@ -390,7 +399,8 @@ function waLink(text){
   return "https://wa.me/" + n + "?text=" + encodeURIComponent(text);
 }
 function jarHTML(p){
-  return '<div class="jar" data-jar="' + p.id + '"><div class="lid"></div><div class="jbody' + (p.frost ? ' frost' : '') + '"><div class="label"><img src="/logo-mark.png" alt=""><b>' + p.name.replace(" Crystals","") + '</b><i>' + p.jar + '</i></div></div></div>';
+  var slug = {"pasak-bumi":"tongkat-ali","purwoceng":"purwoceng","sambiloto":"sambiloto","menthol":"menthol"}[p.id];
+  return '<div class="jar cap" data-jar="' + p.id + '"><img src="/' + slug + '-card.webp?v=21" width="700" height="315" alt="' + p.name + ' in a glass capsule" loading="lazy"></div>';
 }
 function list(items){ return "<ul>" + items.map(function(i){ return "<li>" + i + "</li>"; }).join("") + "</ul>"; }
 function controls(p){

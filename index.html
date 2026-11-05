@@ -174,9 +174,11 @@ h1{text-shadow:none!important;filter:drop-shadow(0 2px 8px rgba(0,0,0,.75))}
 .stage::after{display:none}
 
 /* hero capsule */
-.hero-cap-link{display:block;line-height:0}
-.hero-capsule{width:min(270px,64vw);height:auto;animation:rise 2.2s ease-out both;filter:drop-shadow(0 10px 22px rgba(0,0,0,.6)) drop-shadow(0 0 46px rgba(215,154,106,.30))}
-.hero{padding-top:36px}
+.hero-cap-link{display:block;line-height:0;position:relative;z-index:1}
+.hero-cap-link::before{content:"";position:absolute;left:50%;top:50%;width:150%;height:112%;transform:translate(-50%,-50%);background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(242,179,107,.55),rgba(215,154,106,.22) 45%,transparent 72%);filter:blur(10px);z-index:-1;pointer-events:none}
+.hero-capsule{height:min(39vh,340px);width:auto;max-width:52vw;animation:rise 2.2s ease-out both;filter:drop-shadow(0 0 3px rgba(255,214,160,.55)) drop-shadow(0 0 22px rgba(236,189,142,.55)) drop-shadow(0 0 60px rgba(215,154,106,.45))}
+.hero{padding-top:28px;padding-bottom:56px}
+.hero h1{margin-top:14px}
 </style>
   <link rel="canonical" href="https://rootsource.one/">
 <link rel="preload" as="image" href="/tongkat-ali-capsule-hero.webp?v=1" type="image/webp">

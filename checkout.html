@@ -250,5 +250,6 @@ document.getElementById("savecard").addEventListener("click", function(e){
 (function(){ var m = location.search.match(/[?&]add=([a-z]+)&size=(\d+)&qty=(\d+)/); if (m && st[m[1]] && st[m[1]][+m[2]] !== undefined) { st[m[1]][+m[2]] = Math.min(+m[3], 20); } })();
 render();
 </script>
+<script src="/search.js?v=1" defer></script>
 </body>
 </html>

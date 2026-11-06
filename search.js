@@ -11,12 +11,13 @@ var o=document.createElement('div');o.id='rs-ov';o.innerHTML='<div id="rs-box"><
 document.body.appendChild(b);document.body.appendChild(o);
 var inp=o.querySelector('#rs-in'),out=o.querySelector('#rs-out');
 function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ask(){var q=encodeURIComponent(inp.value.trim());return '<a class="rs-r" href="mailto:admin@rootsource.one?subject=Question%20from%20the%20website&body=My%20question%3A%20'+q+'%0A"><i>Not answered here?</i><b>Email us your question</b><small>We read every question and add common ones to our answers.</small></a>'}
 function run(){var q=inp.value.toLowerCase().trim();if(q.length<2){out.innerHTML='';return}
 var w=q.split(/\s+/),r=[];I.forEach(function(e){var t=e.t.toLowerCase(),x=(e.x||'').toLowerCase(),p=e.p.toLowerCase(),sc=0;
 for(var i=0;i<w.length;i++){var k=w[i];if(t.indexOf(k)>-1)sc+=3;else if(x.indexOf(k)>-1)sc+=1;else if(p.indexOf(k)>-1)sc+=1;else{sc=0;break}}
 if(sc)r.push([sc,e])});r.sort(function(a,b){return b[0]-a[0]});r=r.slice(0,12);
-if(!r.length){out.innerHTML='<div id="rs-n">No match yet. Try another word, such as dose, safety, delivery or extract.</div>';return}
-out.innerHTML=r.map(function(a){var e=a[1];return '<a class="rs-r" href="/'+e.u+'"><i>'+esc(e.p)+'</i><b>'+esc(e.t)+'</b>'+(e.x?'<small>'+esc(e.x.slice(0,140))+'...</small>':'')+'</a>'}).join('')}
+if(!r.length){out.innerHTML='<div id="rs-n">No match yet. Try another word, such as dose, safety, delivery or extract.</div>'+ask();;return}
+out.innerHTML=r.map(function(a){var e=a[1];return '<a class="rs-r" href="/'+e.u+'"><i>'+esc(e.p)+'</i><b>'+esc(e.t)+'</b>'+(e.x?'<small>'+esc(e.x.slice(0,140))+'...</small>':'')+'</a>'}).join('')+ask()}
 function open_(){o.classList.add('on');inp.focus()}function close_(){o.classList.remove('on')}
 b.onclick=open_;o.querySelector('#rs-x').onclick=close_;inp.oninput=run;
 document.addEventListener('keydown',function(e){if(e.key==='Escape')close_()});
